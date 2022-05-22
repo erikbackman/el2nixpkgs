@@ -1,7 +1,6 @@
+{ pkgs, el2nixpkgs }:
+
 let
-  pkgs = import ./nix/nixpkgs.nix {};
-  package = import ./default.nix;
-  
   haskellTooling = with pkgs;
     [ ghcid
       ghc
@@ -16,7 +15,7 @@ let
     ];
 in
 pkgs.mkShell {
-  name = "haskell-dev-shell";
-  inputsFrom = [ package.env ];
+ # name = "haskell-dev-shell";
+#  inputsFrom = [ package.env ];
   buildInputs = haskellTooling ++ [pkgs.zlib];
 }
