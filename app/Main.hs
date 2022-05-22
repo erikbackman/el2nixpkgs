@@ -1,5 +1,6 @@
 {-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
 {-# HLINT ignore "Use camelCase" #-}
+{-# LANGUAGE BlockArguments #-}
 
 module Main where
 
@@ -9,23 +10,26 @@ import Data.Maybe
 import System.Directory
 import Control.Monad
 import System.Environment (getArgs)
+import System.IO
 
 main :: IO ()
 main = do
   args <- getArgs
   case args of
-    [] -> putStrLn "Unable to parse lisp"
-    (x:_) -> do
-      e <- doesFileExist x
-      when e $ do
-        src <- readFile x
-        let pkgs = extract_packages src
-        print pkgs
+    []               -> putStrLn "Unable to parse lisp"
+    (style:config:_) -> do
+      readable <- doesFileExist config
+      when readable $ do
+        src <- readFile' config
+        putStrLn $ maybe "Unsupported" show (extractWith style src)
 
-extract_packages :: String -> String
-extract_packages = packagesToNix . fromMaybe mempty . traverse extract_setup_el . parseLisp
+extractWith :: String -> String -> Maybe String
+extractWith "setup" lisp = extract_packages lisp extract_setup_el
+extractWith _      _     = Nothing
 
--- Nix --------------------------------------------------
+extract_packages :: String -> (LispVal -> Maybe Package) -> Maybe String
+extract_packages src extract = fmap packagesToNix . traverse extract . parseLisp $ src
+
 newtype Package = Package { fromPackage :: String }
   deriving (Eq, Show)
 
