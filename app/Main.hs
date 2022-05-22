@@ -32,6 +32,7 @@ extractWith style = fmap packagesToNix . traverse f . parseLisp
     f = case style of
       "setup" -> extract_setup_el
       "use-package" -> extract_use_package
+      _ -> const Nothing
 
 extractFor :: String -> LispVal -> Maybe Package
 extractFor k (List (Atom k' : Atom pkg : _)) =
