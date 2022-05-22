@@ -11,9 +11,8 @@ parseLisp = fold . parse' lispSource
   where
     parse' p = parse p ""
 
-
 symbol :: Parser Char
-symbol = oneOf "!$%&|*+-/:<=>?@^_~#"
+symbol = oneOf "!$%&|*+-/:<=>?@^_~"
 
 spaces :: Parser ()
 spaces = skipMany1 space
@@ -58,6 +57,7 @@ parseDottedList = do
 
 parseQuoted :: Parser LispVal
 parseQuoted = do
+  optional $ char '\35'
   char '\''
   x <- parseExpr
   pure $ List [Atom "quote", x]
