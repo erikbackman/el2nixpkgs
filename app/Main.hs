@@ -27,9 +27,9 @@ newtype Package = Package {fromPackage :: String}
   deriving (Eq, Show)
 
 extractWith :: String -> String -> Maybe String
-extractWith how = fmap packagesToNix . traverse f . parseLisp
+extractWith style = fmap packagesToNix . traverse f . parseLisp
   where
-    f = case how of
+    f = case style of
       "setup" -> extract_setup_el
       "use-package" -> extract_use_package
 
