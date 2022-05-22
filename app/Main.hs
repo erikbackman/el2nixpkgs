@@ -21,7 +21,7 @@ main = do
       readable <- doesFileExist config
       when readable $ do
         src <- readFile' config
-        putStrLn $ maybe "Unsupported" show (extractWith style src)
+        print $ fromMaybe "Unsupported" (extractWith style src)
 
 newtype Package = Package {fromPackage :: String}
   deriving (Eq, Show)
