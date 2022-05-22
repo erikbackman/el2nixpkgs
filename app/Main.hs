@@ -30,10 +30,7 @@ newtype Package = Package { fromPackage :: String }
   deriving (Eq, Show)
 
 extract_setup_el :: LispVal -> Maybe Package
-extract_setup_el (List (Atom "setup":rest)) =
-  case rest of
-    (Atom pkg:_) -> Just $ Package pkg
-    (List (Atom "quote":Atom pkg:_):_) -> Just $ Package pkg
+extract_setup_el (List (Atom "setup":Atom pkg:_)) = Just $ Package pkg
 extract_setup_el _ = Nothing
 
 packagesToNix :: [Package] -> String
